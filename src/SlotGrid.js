@@ -3,8 +3,6 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 
-const SIZE_LETTERS = [null, 'S', 'M', 'L']; /* XXX duplicated */
-
 const styles = theme => ({
     root: {
         flexGrow: 1,
