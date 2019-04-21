@@ -4,97 +4,79 @@ import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 
 class ShipStatus extends Component {
-    constructor(props) {
-        super(props);
+  renderStatusRow(i, label, current, max) {
+    return (
+      <tr key={i}>
+        <td>{label}:</td>
+        <td>{current}</td>
+        <td>/</td>
+        <td className={this.props.classes.statusMaxCell}>{max}</td>
+      </tr>
+    )
+  }
 
-        const { classes, shipType, components, GAME_DATA } = props;
-        this.state = { classes, shipType, components, GAME_DATA };
+  renderStatusTable() {
+    const reduceComponents = (field) => {
+      let current = 0;
+
+      const reduceWrapper = (prev, curr) => {
+        let after = prev + curr[field];
+        console.log('reduceComponents: ', prev, ' + ', curr.name, '.', field, ' = ', after, ' (', after - prev, ')');
+        return after;
+      }
+
+      for (let size of Object.values(this.props.components)) {
+        current = size.reduce((p, c) => reduceWrapper(p, c), current);
+      }
+
+      return current;
     }
 
-    renderStatusRow(i, label, current, max) {
-        return (
-            <tr key={i}>
-                <td>{label}:</td>
-                <td>{current}</td>
-                <td>/</td>
-                <td className={this.state.classes.statusMaxCell}>{max}</td>
-            </tr>
-        )
+    const baseShip = this.props.GAME_DATA.SHIP_TYPES[this.props.shipType];
+    const list = [
+      ["Mass", reduceComponents("mass"), reduceComponents("drive_mass")],
+      ["Crew", reduceComponents("holds_crew"), baseShip.max_crew],
+      ["Officers", reduceComponents("holds_officer"), baseShip.max_officer],
+      ["Craft", reduceComponents("holds_craft"), baseShip.max_craft],
+    ];
+
+    const rows = [];
+
+    for (let i = 0; i < list.length; i++) {
+      rows.push(this.renderStatusRow(i + 1, list[i][0], list[i][1], list[i][2]));
     }
 
-    renderStatusTable() {
-        const reduceComponents = (fn, start) => {
-            let current = start;
-    
-            const reduceWrapper = (f, prev, curr) => {
-                let after = f(prev, curr);
-                console.log("reduceComponents: ", prev, " + ", curr.name, " = ", after, " (",
-                    after - prev, ")");
-                return after;
-            }
+    return (
+      <table>
+        <tbody>
+          {list.map((item, idx) => this.renderStatusRow(idx + 1, item[0], item[1], item[2]))}
+        </tbody>
+      </table>
+    );
+  }
 
-            for (let size of Object.values(this.state.components)) {
-                current = size.reduce((p, c) => reduceWrapper(fn, p, c), current);
-            }
-    
-            return current;
-        }
-    
-        const list = [];
-
-        let currentMass = reduceComponents((prev, curr) => prev + curr.mass, 0);
-        let maxMass = reduceComponents((prev, curr) => prev + curr.drive_mass, 0);
-        list.push(["Mass", currentMass, maxMass]);
-
-        let currentCrew = reduceComponents((prev, curr) => prev + curr.holds_crew, 0);
-        let maxCrew = this.state.GAME_DATA.SHIP_TYPES[this.state.shipType].max_crew;
-        list.push(["Crew", currentCrew, maxCrew]);
-
-        let currentOfficers = reduceComponents((prev, curr) => prev + curr.holds_officer, 0);
-        let maxOfficers = this.state.GAME_DATA.SHIP_TYPES[this.state.shipType].max_officer;
-        list.push(["Officers", currentOfficers, maxOfficers]);
-
-        let currentCraft = reduceComponents((prev, curr) => prev + curr.holds_craft, 0);
-        let maxCraft = this.state.GAME_DATA.SHIP_TYPES[this.state.shipType].max_craft;
-        list.push(["Craft", currentCraft, maxCraft]);
-        
-        const rows = [];
-
-        for (let i = 0; i < list.length; i++) {
-            rows.push(this.renderStatusRow(i + 1, list[i][0], list[i][1], list[i][2]));
-        }
-
-        return (
-            <table>
-                <tbody>
-                    {rows}
-                </tbody>
-            </table>
-        );
-    }
-
-    render() {
-        return (
-            <Grid item>
-                <Paper className={this.state.classes.statusTable}>
-                    {this.renderStatusTable()}
-                </Paper>
-            </Grid>
-        );
-    }
+  render() {
+    return (
+      <Grid item>
+        <Paper className={this.props.classes.statusTable}>
+          {this.renderStatusTable()}
+        </Paper>
+      </Grid>
+    );
+  }
 }
 
 const styles = theme => ({
-    root: {
-        flexGrow: 1,
-    },
-    statusTable: {
-        padding: theme.spacing.unit,
-        color: theme.palette.text.primary,
-    },
-    statusMaxCell: {
-        color: theme.palette.text.secondary,
-    }
+  root: {
+    flexGrow: 1,
+  },
+  statusTable: {
+    padding: theme.spacing.unit,
+    color: theme.palette.text.primary,
+  },
+  statusMaxCell: {
+    color: theme.palette.text.secondary,
+  }
 });
 
 export default withStyles(styles)(ShipStatus);
