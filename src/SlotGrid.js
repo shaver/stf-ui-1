@@ -3,7 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 const SHIP_COMPONENTS = require('./components.json');
-const SIZE_LETTERS = [null, "S", "M", "L"];
+const SIZE_LETTERS = [null, 'S', 'M', 'L'];
 
 const styles = theme => ({
     root: {
@@ -12,14 +12,14 @@ const styles = theme => ({
     shipName: {
         padding: theme.spacing.unit,
         textAlign: 'center',
-        color: theme.palette.text.secondary,
+        color: theme.palette.text.primary,
         height: 16,
         width: 300,
     },
-    paper: {
+    slot: {
         padding: theme.spacing.unit,
         textAlign: 'center',
-        color: theme.palette.text.secondary,
+        color: theme.palette.text.primary,
         height: 75,
         width: 75,
     },
@@ -31,7 +31,7 @@ class SlotGrid extends Component {
         const { classes, ship } = props;
         this.classes = classes;
         this.ship = ship;
-        this.default_components = {"S": [], "M": [], "L": []};
+        this.default_components = {'S': [], 'M': [], 'L': []};
         for (let i = 0; i < ship.default_components.length; i++) {
             let comp = SHIP_COMPONENTS[ship.default_components[i]];
             this.default_components[SIZE_LETTERS[comp.size]].push(comp);
@@ -45,14 +45,14 @@ class SlotGrid extends Component {
             let label = SIZE_LETTERS[size] + (i + 1);
             slots.push(
                 <Grid item container key={label} xs={1}>
-                    <Paper className={this.classes.paper}>
+                    <Paper className={this.classes.slot}>
                         {label}: {size_comps[i].id}
                     </Paper>
                 </Grid>
             );
         }
         return (
-            <Grid container item justify="center" spacing={8} xs={12}>
+            <Grid container item justify='center' spacing={8} xs={12}>
                 {slots}
             </Grid>
         );
@@ -61,18 +61,16 @@ class SlotGrid extends Component {
     render() {
         const classes = this.classes;
         return (
-            <div>
-                <Grid container spacing={16} justify="center">
-                    <Grid item container justify="center" key="shipName" xs={8}>
-                        <div className={classes.shipName}>
+            <Grid container spacing={16} justify='center'>
+                <Grid item container justify='center' key='shipName' xs={8}>
+                    <div className={classes.shipName}>
                         {this.props.ship.name}
-                        </div>
-                    </Grid>
-                    {this.renderSlotRow(3)}
-                    {this.renderSlotRow(2)}
-                    {this.renderSlotRow(1)}
+                    </div>
                 </Grid>
-            </div>
+                {this.renderSlotRow(3)}
+                {this.renderSlotRow(2)}
+                {this.renderSlotRow(1)}
+            </Grid>
         );
     }
 }
