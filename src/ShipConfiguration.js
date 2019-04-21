@@ -42,12 +42,12 @@ class ShipConfiguration extends Component {
 
         return (
             <Grid container spacing={0}>
-                <Grid item container justify='center' key='shipName' xs={9}>
+                <Grid item container justify='center' key='shipName' xs={10}>
                     <div className={this.props.classes.shipName}>
                         {this.renderShipSelector()}
                     </div>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={10}>
                     <SlotGrid shipType={this.state.shipType}
                         components={components}
                         GAME_DATA={this.props.GAME_DATA}
@@ -74,6 +74,7 @@ const styles = theme => ({
         color: theme.palette.text.primary,
         height: 16,
         width: 300,
+        marginBottom: theme.spacing.unit,
     },
 });
 
