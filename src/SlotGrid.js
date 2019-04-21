@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
-const SHIP_COMPONENTS = require('./components.json');
-const SIZE_LETTERS = [null, 'S', 'M', 'L'];
+
+const SIZE_LETTERS = [null, 'S', 'M', 'L']; /* XXX duplicated */
 
 const styles = theme => ({
     root: {
@@ -28,24 +28,19 @@ const styles = theme => ({
 class SlotGrid extends Component {
     constructor(props) {
         super(props);
-        const { classes, ship } = props;
-        this.classes = classes;
-        this.ship = ship;
-        this.default_components = {'S': [], 'M': [], 'L': []};
-        for (let i = 0; i < ship.default_components.length; i++) {
-            let comp = SHIP_COMPONENTS[ship.default_components[i]];
-            this.default_components[SIZE_LETTERS[comp.size]].push(comp);
-        }
+        const { classes, shipType, components, GAME_DATA } = props;
+        this.state = { classes, shipType, components, GAME_DATA };
     }
 
     renderSlotRow(size) {
         let slots = [];
-        let size_comps = this.default_components[SIZE_LETTERS[size]];
+        let letter = this.state.GAME_DATA.SIZE_LETTERS[size]
+        let size_comps = this.state.components[letter];
         for (let i = 0; i < size_comps.length; i++) {
-            let label = SIZE_LETTERS[size] + (i + 1);
+            let label = letter + (i + 1);
             slots.push(
                 <Grid item container key={label} xs={1}>
-                    <Paper className={this.classes.slot}>
+                    <Paper className={this.state.classes.slot}>
                         {label}: {size_comps[i].id}
                     </Paper>
                 </Grid>
@@ -59,12 +54,11 @@ class SlotGrid extends Component {
     }
 
     render() {
-        const classes = this.classes;
         return (
             <Grid container spacing={16} justify='center'>
                 <Grid item container justify='center' key='shipName' xs={8}>
-                    <div className={classes.shipName}>
-                        {this.props.ship.name}
+                    <div className={this.state.classes.shipName}>
+                        {this.state.GAME_DATA.SHIP_TYPES[this.state.shipType].name}
                     </div>
                 </Grid>
                 {this.renderSlotRow(3)}

@@ -24,6 +24,7 @@ class ShipStatus extends Component {
 
     renderStatusTable() {
         const list = [];
+        
         list.push(["Mass", 1500, 1800]);
         list.push(["Crew", 24, 30]);
         list.push(["Officers", 4, 5]);
